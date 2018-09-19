@@ -42,11 +42,15 @@ public class MainActivity extends AppCompatActivity {
     // Used to load the 'native-lib' library on application startup.
     public static final int ROW_NUM = 28;
     public static final int COL_NUM = 16;
-    public static final int TOUCH_THR=100;
+    public static final int TOUCH_THR=110;
     public int touchPoints[] = {1,2,3,4,5,6,7,8,9,10,11,12};
     short lastData[] = new short[ROW_NUM];
     public int minutes = 5;
     public int seconds = 1;
+    int times = 1;
+    public String server_ip = "10.19.144.140";
+    public String socket_port = "3000";
+    public String classify_port = "5000";
 
     public RequestQueue mQueue;
     public TextView action_text;
@@ -54,10 +58,14 @@ public class MainActivity extends AppCompatActivity {
     public ImageView yoga_view;
 
     private com.github.nkzawa.socketio.client.Socket mSocket;
-    {
+    private void initSocket(String server_ip,String socket_port){
         try {
-            mSocket = IO.socket("http://10.0.0.67:5000");
+            mSocket = IO.socket("http://"+server_ip+":"+socket_port);
         } catch (URISyntaxException e) {}
+        finally{
+            mSocket.on("change",onNewMessageListener);
+            mSocket.connect();
+        }
     }
     private Emitter.Listener onNewMessageListener = new Emitter.Listener() {
         @Override
@@ -167,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         String capaData = "";
-        String gesture = "1";  //0:无动作，1：平板支撑，2：金鸡独立，3：静坐
+        String gesture = "5";  //0:无动作，1：平板支撑，2：金鸡独立，3：静坐
         String type="store";
         boolean touched = false;
         boolean same = true;
@@ -182,9 +190,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(touched){
-//            Log.e("bug","touched");
+            Log.e("bug",""+times++);
             capaData = (gesture + capaData);
-            sendCloud(capaData+"\n","10.19.195.93","5000",type);
+            sendCloud(capaData+"\n",server_ip,classify_port,type);
         }
 //        if(!same){
 //            capaData = (gesture + capaData);
@@ -201,12 +209,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 //nothing here
-                Log.e("bug",response);
+//                Log.e("bug",response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("bug",error.toString());
+//                Log.e("bug",error.toString());
             }
         }){
             @Override
@@ -231,21 +239,17 @@ public class MainActivity extends AppCompatActivity {
         yoga_view = findViewById(R.id.imageView3);
         timer.schedule(task,0,1000);
 
-        mSocket.on("change",onNewMessageListener);
-        mSocket.connect();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true){
+                    try {
+                        refresh();
+                    }catch (Exception e){
 
-//        sendCloud("hehe","10.0.0.67","5000","store");
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                while(true){
-//                    try {
-//                        refresh();
-//                    }catch (Exception e){
-//
-//                    }
-//                }
-//            }
-//        }).start();
+                    }
+                }
+            }
+        }).start();
     }
 }
