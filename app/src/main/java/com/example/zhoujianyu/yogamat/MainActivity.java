@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
     public int minutes = 5;
     public int seconds = 1;
     int times = 1;
-    public String server_ip = "10.19.144.140";
-    public String socket_port = "3000";
+    public String server_ip = "10.19.20.229";
+    public String socket_port = "5000";
     public String classify_port = "5000";
 
     public RequestQueue mQueue;
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                         minutes = 5;seconds=1;
                     }
                     else if(action.equals("1")){
-                        action_text.setText("Toe Stand");
+                        action_text.setText("Lord of the Dance Pose");
                         yoga_view.setImageResource(R.drawable.action1_s);
                         yoga_view.setRotation(0);
                         yoga_view.getLayoutParams().height=550;
@@ -96,14 +96,14 @@ public class MainActivity extends AppCompatActivity {
                         minutes = 5;seconds=1;
                     }
                     else if(action.equals("3")){
-                        action_text.setText("Lunge");
+                        action_text.setText("High Lunge Variation");
                         yoga_view.setImageResource(R.drawable.action3_s);
                         yoga_view.setRotation(0);
                         yoga_view.getLayoutParams().height=700;
                         minutes = 5;seconds=1;
                     }
                     else if(action.equals("4")){
-                        action_text.setText("Overturn");
+                        action_text.setText("Camel Pose");
                         yoga_view.setImageResource(R.drawable.action4_s);
                         yoga_view.setRotation(0);
                         yoga_view.getLayoutParams().height=700;
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     else{
                         action_text.setText("5");
-                        action_text.setText("Meditate");
+                        action_text.setText("Lotus Pose");
                         yoga_view.setImageResource(R.drawable.action5_s);
                         yoga_view.setRotation(0);
                         yoga_view.getLayoutParams().height=700;
@@ -189,11 +189,11 @@ public class MainActivity extends AppCompatActivity {
             lastData[i] = data[i*COL_NUM];
         }
 
-        if(touched){
-            Log.e("bug",""+times++);
-            capaData = (gesture + capaData);
-            sendCloud(capaData+"\n",server_ip,classify_port,type);
-        }
+//        if(touched){
+//            Log.e("bug",""+times++);
+//            capaData = (gesture + capaData);
+//            sendCloud(capaData+"\n",server_ip,classify_port,type);
+//        }
 //        if(!same){
 //            capaData = (gesture + capaData);
 //            sendCloud(capaData+"\n","10.19.195.93","5000",type);
@@ -238,6 +238,7 @@ public class MainActivity extends AppCompatActivity {
         time_view = findViewById(R.id.editText);
         yoga_view = findViewById(R.id.imageView3);
         timer.schedule(task,0,1000);
+        initSocket(server_ip,socket_port);
 
         new Thread(new Runnable() {
             @Override
